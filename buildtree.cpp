@@ -21,7 +21,7 @@ public:
 // serching the first element from preorder in inorder
 int search(int inorder[], int curr, int start, int end)
 {
-    for (int i = start; i < end; i++)
+    for (int i = start; i <= end; i++)
     {
         if (inorder[i] == curr)
         {
@@ -49,9 +49,15 @@ node *buildtree(int preorder[], int inorder[], int start, int end)
     }
     // serching every element in the inorder
     int pos = search(inorder, curr, start, end);
+    if (pos == -1)
+    {
+        // Element not found, should not happen in a valid traversal
+        // This could be due to an incorrect traversal sequence
+        return NULL;
+    }
     // based on its pos in inorder keepinh in the tree
     n->left = buildtree(preorder, inorder, start, pos - 1);
-    n->right = buildtree(preorder, inorder, start, pos + 1);
+    n->right = buildtree(preorder, inorder, pos + 1, end);
     return n;
 }
 // printing in the preorder format
