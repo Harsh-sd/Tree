@@ -1,6 +1,4 @@
-// we have to print all the nodes at distance k from the target node#include <iostream>
 #include <iostream>
-
 using namespace std;
 
 struct node
@@ -9,7 +7,6 @@ struct node
     node *left;
     node *right;
 
-public:
     node(int val)
     {
         data = val;
@@ -17,8 +14,8 @@ public:
         right = NULL;
     }
 };
-// case :1 , when we are finding the nodes in a subtree
-void printSubtree(node *root, int k)
+
+void printSubtreenodes(node *root, int k)
 {
     if (root == NULL || k < 0)
     {
@@ -27,9 +24,52 @@ void printSubtree(node *root, int k)
     if (k == 0)
     {
         cout << root->data << " ";
-    };
-    printSubtree(root->left, k - 1);
-    printSubtree(root->right, k - 1);
+    }
+    printSubtreenodes(root->left, k - 1);
+    printSubtreenodes(root->right, k - 1);
+}
+
+int printnodesatk(node *root, node *target, int k)
+{
+    if (root == NULL)
+    {
+        return -1;
+    }
+    if (root == target)
+    {
+        printSubtreenodes(root, k);
+        return 0;
+    }
+
+    int dl = printnodesatk(root->left, target, k);
+    if (dl != -1)
+    {
+        if (dl + 1 == k)
+        {
+            cout << root->data << " ";
+        }
+        else
+        {
+            printSubtreenodes(root->right, k - dl - 2);
+        }
+        return 1 + dl;
+    }
+
+    int dr = printnodesatk(root->right, target, k);
+    if (dr != -1)
+    {
+        if (dr + 1 == k)
+        {
+            cout << root->data << " ";
+        }
+        else
+        {
+            printSubtreenodes(root->left, k - dr - 2);
+        }
+        return 1 + dr;
+    }
+
+    return -1;
 }
 
 int main()
@@ -41,6 +81,11 @@ int main()
     root->left->right = new node(5);
     root->right->left = new node(6);
     root->right->right = new node(7);
-    printSubtree(root, 2);
+
+    cout << "Nodes at distance 1 from node 2: ";
+    printnodesatk(root, root->left, 1);
+    cout << endl;
+
     return 0;
 }
+// return 4 5 1
